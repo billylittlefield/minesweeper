@@ -15,15 +15,19 @@ class Board
   def populate_grid
     grid.each_with_index do |row, row_idx|
       row.each_with_index do |cell, col_idx|
-        cell = Tile.new(self, [row_idx, col_idx])
+        self[[row_idx, col_idx]] = Tile.new(self, [row_idx, col_idx])
       end
     end
-    puts grid
+    # p grid
     add_bombs
   end
 
   def [](pos)
     grid[pos[0]][pos[1]]
+  end
+
+  def []=(pos, mark)
+    grid[pos[0]][pos[1]] = mark
   end
 
   def add_bombs
@@ -34,15 +38,17 @@ class Board
       end
       bomb_status = true
     end
+    nil
   end
 
   def render
     grid.each do |row|
       row.each do |cell|
-        print  "#{cell.display} "
+        print  "#{cell.disply} "
       end
       print "\n"
     end
+    nil
   end
 
   def play

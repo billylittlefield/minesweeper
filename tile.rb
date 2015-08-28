@@ -2,7 +2,7 @@ class Tile
 
   MOVE = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[-1,1],[1,-1]]
 
-  attr_accessor :reveal_status, :bomb_status
+  attr_accessor :reveal_status, :bomb_status, :disply
 
   def initialize(board, position, bomb_status = false, reveal_status = false)
     @board = board
@@ -10,7 +10,7 @@ class Tile
     @bomb_status = bomb_status
     @flagged = false
     @position = position
-    @display = '*'
+    @disply = '*'
   end
 
   def reveal(flag)
@@ -32,10 +32,10 @@ class Tile
   def reveal!
     if neighbor_bomb_count > 0
       reveal_status = true
-      display = neighbor_bomb_count.to_s
+      disply = neighbor_bomb_count.to_s
       return
     end
-    display = '_'
+    disply = '_'
     neighbors.each {|neighbor| neighbor.reveal!}
   end
 
