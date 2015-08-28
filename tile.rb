@@ -44,8 +44,7 @@ class Tile
     @reveal_status = true
     if neighbor_bomb_count > 0
       @disply = neighbor_bomb_count.to_s
-      # print position
-      nil
+      return
     end
     @disply = '_'
     neighbors.each { |neighbor| neighbor.reveal! }
@@ -65,7 +64,4 @@ class Tile
   def neighbor_bomb_count
     neighbors.count { |tile| tile.bomb_status }
   end
-
-
-
 end

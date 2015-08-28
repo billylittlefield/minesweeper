@@ -18,7 +18,6 @@ class Board
         self[[row_idx, col_idx]] = Tile.new(self, [row_idx, col_idx])
       end
     end
-    # p grid
     add_bombs
   end
 
@@ -44,7 +43,9 @@ class Board
   end
 
   def render
-    grid.each do |row|
+    print "  #{(0..8).to_a.join(' ')}\n"
+    grid.each_with_index do |row, row_idx|
+      print "#{row_idx} "
       row.each do |cell|
         print  "#{cell.disply} "
       end
