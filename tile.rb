@@ -16,10 +16,10 @@ class Tile
 
   def deal_with_flag(flag)
     if flag
-      flagged = true
+      @flagged = true
       @disply = "F"
     else
-      flagged = false
+      @flagged = false
       @disply = '*'
     end
   end
@@ -40,13 +40,14 @@ class Tile
   end
 
   def reveal!
+    return if reveal_status == true
+    @reveal_status = true
     if neighbor_bomb_count > 0
-      reveal_status = true
-      disply = neighbor_bomb_count.to_s
+      @disply = neighbor_bomb_count.to_s
       # print position
       nil
     end
-    disply = '_'
+    @disply = '_'
     neighbors.each { |neighbor| neighbor.reveal! }
   end
 
