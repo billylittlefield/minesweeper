@@ -32,11 +32,13 @@ class Board
 
   def add_bombs
     9.times do
-      bomb_status = grid.sample.sample.bomb_status
-      until !bomb_status
-        bomb_status = grid.sample.sample.bomb_status
+      position = grid.sample.sample
+       until !position.bomb_status
+        position = grid.sample.sample
       end
-      bomb_status = true
+      # p position.bomb_status
+      position.bomb_status = true
+      # p position.bomb_status
     end
     nil
   end
@@ -52,14 +54,17 @@ class Board
   end
 
   def play
+    populate_grid
     until game_over
-      pos = prompt
+      system 'clear'
+      render
+      pos = prompt_location
       flag = prompt_flag
       self[pos].reveal(flag)
     end
   end
 
-  def prompt
+  def prompt_location
     puts "Please choose a location"
     pos = gets.chomp.split(',').map {|num| num.to_i}
   end
@@ -68,15 +73,18 @@ class Board
     puts "Do you want to flag? (enter 'F') Or unflag? (enter 'U') Or none (hit enter)"
     value = gets.chomp.downcase
     if value == 'f'
-      num_flag += 1
+      @num_flag += 1
       return true
     elsif value == 'u'
-      num_flag -= 1
+      @num_flag -= 1
       return false
     else
       return nil
     end
   end
+end
 
-
+if __FILE__ == $PROGRAM_NAME
+  board = Board.new
+  board.play
 end
