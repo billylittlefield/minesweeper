@@ -1,24 +1,23 @@
 require_relative 'tile'
+require 'yaml'
 
 class Board
-  attr_accessor :game_over, :num_flag
-  attr_reader :grid
 
   def initialize
     @grid = Array.new(9) {Array.new(9)}
-    @game_over = false
-    @num_flag = 0
   end
 
-
-
-  def populate_grid
-    grid.each_with_index do |row, row_idx|
-      row.each_with_index do |cell, col_idx|
-        self[[row_idx, col_idx]] = Tile.new(self, [row_idx, col_idx])
-      end
+  def play
+    populate_grid
+    until lost? || won?
+      system 'clear'
+      render
+      pos = prompt_location
+      next if pos.empty?
+      target = self[pos]
+      prompt_flag ? target.flag : target.reveal
     end
-    add_bombs
+    lost? ? puts("BOOM") : puts("You got lucky.")
   end
 
   def [](pos)
@@ -29,59 +28,73 @@ class Board
     grid[pos[0]][pos[1]] = mark
   end
 
+  private
+
+  attr_reader :grid
+
+  def populate_grid
+    grid.each_with_index do |row, row_idx|
+      row.each_with_index do |cell, col_idx|
+        self[[row_idx, col_idx]] = Tile.new(self, [row_idx, col_idx])
+      end
+    end
+    add_bombs
+  end
+
+  def lost?
+    grid.flatten.any? {|tile| tile.bombed && tile.revealed }
+  end
+
+  def won?
+    return false if lost?
+    grid.flatten.all? { |tile| tile.bombed || tile.revealed }
+  end
+
   def add_bombs
     9.times do
       position = grid.sample.sample
-       until !position.bomb_status
+       until !position.bombed
         position = grid.sample.sample
       end
-      # p position.bomb_status
-      position.bomb_status = true
-      # p position.bomb_status
+      position.bombed = true
     end
     nil
   end
 
   def render
-    print "  #{(0..8).to_a.join(' ')}\n"
+    puts "Welcome to Minesweeper. Prepare to do a good job."
+    puts "  #{(0..8).to_a.join(' ')}"
     grid.each_with_index do |row, row_idx|
       print "#{row_idx} "
       row.each do |cell|
-        print  "#{cell.disply} "
+        print  "#{cell.display} "
       end
       print "\n"
     end
     nil
   end
 
-  def play
-    populate_grid
-    until game_over
-      system 'clear'
-      render
-      pos = prompt_location
-      flag = prompt_flag
-      self[pos].reveal(flag)
-    end
-  end
-
   def prompt_location
     puts "Please choose a location"
-    pos = gets.chomp.split(',').map {|num| num.to_i}
+    puts "If you'd like to save, enter 'save'"
+    input = gets.chomp
+    if input == 'save'
+      puts "Please enter a filename."
+      filename = gets.chomp
+      File.write(filename, self.to_yaml)
+      Kernel.exit
+    else
+      pos.split(',').map {|num| num.to_i}
+    end
   end
 
   def prompt_flag
     puts "Do you want to flag? (enter 'F') Or unflag? (enter 'U') Or none (hit enter)"
     value = gets.chomp.downcase
-    if value == 'f'
-      @num_flag += 1
+    if value == 'f' || value == 'u'
       return true
-    elsif value == 'u'
-      @num_flag -= 1
-      return false
-    else
-      return nil
     end
+    false
   end
 end
 

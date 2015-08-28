@@ -2,53 +2,43 @@ class Tile
 
   MOVE = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[-1,1],[1,-1]]
 
-  attr_accessor :reveal_status, :bomb_status
-  attr_reader :board, :disply, :flagged, :position
+  attr_reader :flagged, :revealed
+  attr_accessor :bombed
 
-  def initialize(board, position, bomb_status = false, reveal_status = false)
+  def initialize(board, position)
     @board = board
-    @reveal_status = reveal_status
-    @bomb_status = bomb_status
-    @flagged = false
     @position = position
-    @disply = '*'
+    @revealed = false
+    @bombed = false
+    @flagged = false
   end
 
-  def deal_with_flag(flag)
-    if flag
-      @flagged = true
-      @disply = "F"
-    else
+  def display
+    return "F" if flagged
+    return "_" if revealed && neighbor_bomb_count == 0
+    return neighbor_bomb_count.to_s if revealed
+    return "*"
+  end
+
+  def flag
+    if flagged
       @flagged = false
-      @disply = '*'
-    end
-  end
-
-  def reveal(flag)
-    if !(flag.nil?)
-      deal_with_flag(flag)
-    elsif bomb_status
-      print "BOOM"
-      board.game_over = true
-    elsif board.grid.flatten.all? { |tile| tile.reveal_status || tile.flagged } &&
-        board.num_flag < 10
-      puts "Congrats!"
-      board.game_over = true
     else
-      reveal!
+      @flagged = true
     end
   end
 
-  def reveal!
-    return if reveal_status == true
-    @reveal_status = true
-    if neighbor_bomb_count > 0
-      @disply = neighbor_bomb_count.to_s
-      return
-    end
-    @disply = '_'
-    neighbors.each { |neighbor| neighbor.reveal! }
+  def reveal
+    return if revealed || flagged
+    @revealed = true
+    return if bombed
+    return if neighbor_bomb_count > 0
+    neighbors.each(&:reveal)
   end
+
+  private
+
+  attr_reader :board, :position
 
   def neighbors
     neighbors_pos = []
@@ -62,6 +52,7 @@ class Tile
   end
 
   def neighbor_bomb_count
-    neighbors.count { |tile| tile.bomb_status }
+    neighbors.count { |tile| tile.bombed }
   end
+
 end
