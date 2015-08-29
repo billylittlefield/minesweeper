@@ -1,5 +1,6 @@
 require_relative 'board'
 
+
 class Minesweeper
 
   attr_reader :board
@@ -18,7 +19,7 @@ class Minesweeper
       target = board[pos]
       prompt_flag ? target.flag : target.reveal
     end
-    board.lost? ? puts("BOOM") : puts("You got lucky.")
+    board.lost? ? puts("BOOM".colorize(:red)) : puts("You got lucky.")
   end
 
   def prompt_location

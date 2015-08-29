@@ -1,3 +1,5 @@
+require 'colorize'
+
 class Tile
 
   MOVE = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[-1,1],[1,-1]]
@@ -14,10 +16,10 @@ class Tile
   end
 
   def display
-    return "F" if flagged
-    return "_" if revealed && neighbor_bomb_count == 0
-    return neighbor_bomb_count.to_s if revealed
-    return "*"
+    return "F".colorize(:red) if flagged
+    return "_".colorize(:light_white) if revealed && neighbor_bomb_count == 0
+    return colorize_numbers if revealed
+    return "*".colorize(:white)
   end
 
   def flag
@@ -39,6 +41,19 @@ class Tile
   private
 
   attr_reader :board, :position
+
+  def colorize_numbers
+    case num = neighbor_bomb_count
+    when 3
+      return num.to_s.colorize(:magenta)
+    when 2
+      return num.to_s.colorize(:yellow)
+    when 1
+      return num.to_s.colorize(:light_green)
+    else
+      return num.to_s.colorize(:light_black)
+    end
+  end
 
   def neighbors
     neighbors_pos = []
