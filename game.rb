@@ -14,11 +14,13 @@ class Minesweeper
   def play
     p $stdin.class
     until board.lost? || board.won?
+      p board.status
       board.render
       pos = prompt
       until pos == 'REVEAL' || pos == "FLAG"
         pos = prompt
       end
+      p "test"
     end
     board.lost? ? puts("BOOM".colorize(:red)) : puts("You got lucky.")
   end
@@ -51,8 +53,7 @@ class Minesweeper
       'NO RETURN'
     elsif input == 'REVEAL'
       board[cursor].reveal
-      board.render
-      'RETURN'
+      'REVEAL'
     elsif input == 'FLAG'
       board[cursor].flag
       board.render
@@ -60,19 +61,9 @@ class Minesweeper
     end
   end
 
-  # def prompt_flag
-  #   puts "Enter 'F' to flag, 'U' to unflag, or just hit enter to reveal"
-  #   value = gets.chomp.downcase
-  #   if value == 'f' || value == 'u'
-  #     return true
-  #   end
-  #   false
-  # end
-
   def read_char
     STDIN.echo = false
     STDIN.raw!
-
     input = STDIN.getc.chr
     if input == "\e" then
       input << STDIN.read_nonblock(3) rescue nil
@@ -81,7 +72,6 @@ class Minesweeper
   ensure
     STDIN.echo = true
     STDIN.cooked!
-
     return input
   end
 

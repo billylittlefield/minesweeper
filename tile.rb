@@ -17,9 +17,9 @@ class Tile
 
   def display
     return "F".colorize(:red) if flagged
-    return "_".colorize(:light_white) if revealed && neighbor_bomb_count == 0
+    return "_".colorize(:black) if revealed && neighbor_bomb_count == 0
     return colorize_numbers if revealed
-    return "*".colorize(:white)
+    return "*".colorize(:black)
   end
 
   def flag
@@ -47,11 +47,11 @@ class Tile
     when 3
       return num.to_s.colorize(:magenta)
     when 2
-      return num.to_s.colorize(:yellow)
+      return num.to_s.colorize(:blue)
     when 1
-      return num.to_s.colorize(:light_green)
+      return num.to_s.colorize(:green)
     else
-      return num.to_s.colorize(:light_black)
+      return num.to_s.colorize(:light_red)
     end
   end
 

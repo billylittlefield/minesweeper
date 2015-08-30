@@ -37,6 +37,10 @@ attr_accessor :cursor
     grid.flatten.all? { |tile| tile.bombed || tile.revealed }
   end
 
+  def status
+    grid.flatten.select { |tile| !tile.revealed }.map { |tile| tile.position}
+  end
+
   def render
     system 'clear'
     puts "Welcome to Minesweeper. Prepare to do a good job."
@@ -45,7 +49,7 @@ attr_accessor :cursor
       print "#{row_idx} "
       row.each do |tile|
         if cursor == tile.position
-          print "#{tile.display.colorize(:background => :black)} "
+          print "#{tile.display.colorize(:white).colorize(:background => :black)} "
         else
           print  "#{tile.display} "
         end
