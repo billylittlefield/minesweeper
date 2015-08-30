@@ -4,7 +4,7 @@ class Tile
 
   MOVE = [[0,1],[1,0],[-1,0],[0,-1],[1,1],[-1,-1],[-1,1],[1,-1]]
 
-  attr_reader :flagged, :revealed
+  attr_reader :flagged, :revealed, :position
   attr_accessor :bombed
 
   def initialize(board, position)
@@ -40,7 +40,7 @@ class Tile
 
   private
 
-  attr_reader :board, :position
+  attr_reader :board
 
   def colorize_numbers
     case num = neighbor_bomb_count

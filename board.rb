@@ -1,10 +1,14 @@
 require_relative 'tile'
 require 'yaml'
 
+
 class Board
+
+attr_accessor :cursor
 
   def initialize
     @grid = Array.new(9) {Array.new(9)}
+    @cursor = [0,0]
   end
 
   def [](pos)
@@ -17,7 +21,7 @@ class Board
 
   def populate_grid
     grid.each_with_index do |row, row_idx|
-      row.each_with_index do |cell, col_idx|
+      row.each_index do |col_idx|
         self[[row_idx, col_idx]] = Tile.new(self, [row_idx, col_idx])
       end
     end
@@ -34,12 +38,17 @@ class Board
   end
 
   def render
+    system 'clear'
     puts "Welcome to Minesweeper. Prepare to do a good job."
     puts "  #{(0..8).to_a.join(' ')}"
     grid.each_with_index do |row, row_idx|
       print "#{row_idx} "
-      row.each do |cell|
-        print  "#{cell.display} "
+      row.each do |tile|
+        if cursor == tile.position
+          print "#{tile.display.colorize(:background => :black)} "
+        else
+          print  "#{tile.display} "
+        end
       end
       print "\n"
     end
