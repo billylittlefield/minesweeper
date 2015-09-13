@@ -4,7 +4,7 @@ require 'yaml'
 
 class Board
 
-attr_accessor :cursor
+  attr_accessor :cursor
 
   def initialize
     @grid = Array.new(9) {Array.new(9)}
@@ -43,15 +43,15 @@ attr_accessor :cursor
 
   def render
     system 'clear'
-    puts "Welcome to Minesweeper. Prepare to do a good job."
+    puts "Welcome to Minesweeper. Don't step on a bomb!\n\n"
     puts "  #{(0..8).to_a.join(' ')}"
     grid.each_with_index do |row, row_idx|
       print "#{row_idx} "
       row.each do |tile|
         if cursor == tile.position
-          print "#{tile.display.colorize(:white).colorize(:background => :black)} "
+          print "#{tile.display.colorize(:white).colorize(:background => :blue)}" + " ".colorize(background: :white)
         else
-          print  "#{tile.display} "
+          print  "#{tile.display} ".colorize(:background => :white)
         end
       end
       print "\n"

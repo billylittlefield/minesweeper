@@ -22,11 +22,11 @@ class Minesweeper
       end
       p "test"
     end
-    board.lost? ? puts("BOOM".colorize(:red)) : puts("You got lucky.")
+    board.lost? ? puts("KABOOM! YOU LOSE!".colorize(:light_white).colorize(:background => :light_red)) : puts("Wow, you survived! You got lucky this time!")
   end
 
   def prompt
-    puts "\nUse arrow keys to select a location. Hit enter to reveal, or 'F' to toggle flag"
+    puts "\nUse arrow keys to select a location. \nHit enter/space to reveal, or 'F' to toggle flag"
     puts "If you'd like to save, enter 'save'"
     input = show_input
     cursor = board.cursor
@@ -96,6 +96,8 @@ class Minesweeper
       return "SAVE"
     when "f" || "F" || "u" || "U"
       return "FLAG"
+    when " "
+      return "REVEAL"
     end
   end
 end
